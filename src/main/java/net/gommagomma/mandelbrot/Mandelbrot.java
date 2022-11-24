@@ -39,9 +39,9 @@ public class Mandelbrot
 	int iterationDivergentPoints, iterationPotentialDivergentPoints;
 
 
-	public Mandelbrot(double x0, double y0, double thik)
+	public Mandelbrot(double x0, double y0, int size, double thik)
 	{
-		this((int)(dX/thik), (int)(dY/thik),(int)(x0/thik), (int)(y0/thik), thik);
+		this(size, size, (int)(x0/thik), (int)(y0/thik), thik);
 	}
 
 
@@ -77,12 +77,12 @@ public class Mandelbrot
 
     	System.out.println("begin iterations time: " + new java.util.Date());
 
-    	while (this.hasPotentialDivergentPoints && this.iteration <= MAXITERATIONS)
+    	while (this.hasPotentialDivergentPoints && this.iteration < MAXITERATIONS)
     	{
-    		if ((double)iterationDivergentPoints/iterationPotentialDivergentPoints < 0.00001D) break;
-
     		this.iteration++;
     		this.hasPotentialDivergentPoints = false;
+
+    		if (this.iteration > 10 && (double)iterationDivergentPoints/iterationPotentialDivergentPoints < 0.00001D) break;
 
     		doIteration();
     		updateMset();
@@ -220,6 +220,7 @@ public class Mandelbrot
     			}
     		}
     	}
+
     	return bufferedImage;
     }
 
@@ -233,21 +234,25 @@ public class Mandelbrot
 
     static public void main(String[] args)
     {
-    	Mandelbrot.PLOT_INTERMEDIATE_ITERATIONS = 50;
-    	Mandelbrot.CREATE_INTERMEDIATE_FILES = true;
-    	Mandelbrot.DISPLAY_ON_WINDOW = false;
+    	//Mandelbrot.MAXITERATIONS = 400;
+    	Mandelbrot.PLOT_INTERMEDIATE_ITERATIONS = 1;
+    	Mandelbrot.CREATE_INTERMEDIATE_FILES = false;
+    	Mandelbrot.DISPLAY_ON_WINDOW = true;
     	Mandelbrot.DISPLAY_ON_CONSOLE = false;
     	Mandelbrot.COLOR_MODE = 2;
 
     	//new Mandelbrot(21, 9, 10, 4, 0.25);
     	//new Mandelbrot(1220, 1080, 810, 540, 0.0025);  // 3.05 x 2.7 x0=2.025
-    	//new Mandelbrot(1920, 1080, 1200, 540, 0.0025);   // screen
+    	new Mandelbrot(1920, 1080, 1200, 540, 0.0025);   // screen
 
     	//new Mandelbrot(0.001); // 3049x2700
     	//new Mandelbrot(0.0002); // sizeX: 15249, sizeY: 13500, x0: 10124, y0: 6750
     	//new Mandelbrot(0.00012); // sizeX: 20333, sizeY: 18000, x0: 13500, y0: 9000, it=499  1h 25M
-    	//new Mandelbrot(0.00011); // sizeX: 27727, sizeY: 24545, x0: 18409, y0: 12272 , 
-    	
-    	new Mandelbrot(Mandelbrot.X0, Mandelbrot.Y0, 0.002);
+    	//new Mandelbrot(0.00011); // sizeX: 27727, sizeY: 24545, x0: 18409, y0: 12272 , it=497 1h41 30M
+
+    	//new Mandelbrot(Mandelbrot.dX-1.245, Mandelbrot.Y0-1.31, 20000, 0.000004); // detail 1
+    	//new Mandelbrot(Mandelbrot.dX-1.245, Mandelbrot.Y0-1.305, 20000, 0.000003); // detail 2
+    	//new Mandelbrot(Mandelbrot.dX-1.246, Mandelbrot.Y0-1.30, 20000, 0.000002); // detail 3 - sizeX: 20000, sizeY: 20000, x0: 902000, y0: 25000
+    	//new Mandelbrot(Mandelbrot.dX-1.27, Mandelbrot.Y0-1.323, 20000, 0.000001); // detail 4 - sizeX: 20000, sizeY: 20000, x0: 1780000, y0: 27000
     }
 }
