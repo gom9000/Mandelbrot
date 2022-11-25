@@ -26,17 +26,24 @@ public class Mandelbrot
 	public static double dX = 3.05, dY = 2.7, X0 = 2.025, Y0 = 1.35;
 	public static double SUPLIMIT = 2.0;
 	public static int MAXITERATIONS = 10000;
+	public static int MAXEMPTYIT = 10;
 	public static int PLOT_INTERMEDIATE_ITERATIONS = 0;
 	public static boolean DISPLAY_ON_WINDOW = false;
 	public static boolean DISPLAY_ON_CONSOLE = false;
 	public static boolean CREATE_INTERMEDIATE_FILES = false;
+	public static String FILE_FOLDER = "./";
 	public static int COLOR_MODE = 0;
+	public static double delta = 0.00001D;
+	public static ComplexNumber c = null;
 
+	private int sizeX, sizeY, x0, y0;
+	private double thik;
 	private int iteration;
 	private ComplexPlane plane;
 	private int mset[][];
 	private boolean hasPotentialDivergentPoints = false;
 	int iterationDivergentPoints, iterationPotentialDivergentPoints;
+	int emptyIterationStack = 0;
 
 
 	public Mandelbrot(double x0, double y0, int size, double thik)
@@ -53,15 +60,20 @@ public class Mandelbrot
 
     public Mandelbrot(int sizeX, int sizeY, int x0, int y0, double thik)
     {
-    	System.out.println("start time: " + new java.util.Date());
-    	System.out.println("sizeX: "+sizeX+", sizeY: "+sizeY+", x0: "+x0+", y0: "+y0+", thik: "+thik+", iterations: "+MAXITERATIONS+", mode: "+COLOR_MODE);
-
     	this.iteration = 0;
     	this.hasPotentialDivergentPoints = true;
     	this.iterationDivergentPoints = 1;
     	this.iterationPotentialDivergentPoints = 1;
-    	this.plane = new ComplexPlane(sizeX, sizeY, x0, y0, thik);
+    	this.sizeX = sizeX;
+    	this.sizeY = sizeY;
+    	this.x0 = x0;
+    	this.y0 = y0;
+    	this.thik = thik;
 
+    	System.out.println("start time: " + new java.util.Date());
+    	System.out.println("sizeX: "+sizeX+", sizeY: "+sizeY+", x0: "+x0+", y0: "+y0+", thik: "+thik+", iterations: "+MAXITERATIONS+", mode: "+COLOR_MODE);
+
+    	this.plane = new ComplexPlane(sizeX, sizeY, x0, y0, thik);
     	this.mset = new int[sizeX][sizeY];
 
     	initializeMset();
@@ -82,8 +94,6 @@ public class Mandelbrot
     		this.iteration++;
     		this.hasPotentialDivergentPoints = false;
 
-    		if (this.iteration > 10 && (double)iterationDivergentPoints/iterationPotentialDivergentPoints < 0.00001D) break;
-
     		doIteration();
     		updateMset();
 
@@ -93,18 +103,17 @@ public class Mandelbrot
     		{
     			if (CREATE_INTERMEDIATE_FILES)
     			{
-    				try {
-    					ImageIO.write(createImage(COLOR_MODE), "PNG", new File("mandelbrot_"+sizeX+"_"+sizeY+"_"+x0+"_"+y0+"_"+thik+"_"+iteration+"_"+COLOR_MODE+".png"));
-    				} catch (IOException ignore) {}
+    				plotOnFile();
     			}
     			if (DISPLAY_ON_WINDOW) { plotOnWindow(frame); }
     			if (DISPLAY_ON_CONSOLE) { plotOnConsole(); }
     		}
+
+    		if (iterationDivergentPoints == 0) emptyIterationStack++; else emptyIterationStack = 0;
+    		if (emptyIterationStack%MAXEMPTYIT < 1 && (double)iterationDivergentPoints/iterationPotentialDivergentPoints < delta) break;
     	}
 
-		try {
-			ImageIO.write(createImage(COLOR_MODE), "PNG", new File("mandelbrot_"+sizeX+"_"+sizeY+"_"+x0+"_"+y0+"_"+thik+"_"+iteration+"_"+COLOR_MODE+".png"));
-		} catch (IOException ignore) {}
+    	plotOnFile();
 		if (DISPLAY_ON_WINDOW) { plotOnWindow(frame); }
 		if (DISPLAY_ON_CONSOLE) { plotOnConsole(); }
 
@@ -122,7 +131,14 @@ public class Mandelbrot
     		{
     			if (plane.getAbsolutePoint(ii, jj).mod() <= SUPLIMIT)
     			{
-    	            plane.setAbsolutePoint(ii, jj, plane.getAbsolutePoint(ii, jj).pow(2).add(plane.getAbsolutePoint0(ii, jj)));
+    				if (c != null)
+    				{
+    					// julia set
+    				    plane.setAbsolutePoint(ii, jj, plane.getAbsolutePoint(ii, jj).pow(2).add(c));
+    				} else {
+    					// mandelbrot set
+    	                plane.setAbsolutePoint(ii, jj, plane.getAbsolutePoint(ii, jj).pow(2).add(plane.getAbsolutePoint0(ii, jj)));    					
+    				}
     	            iterationPotentialDivergentPoints++;
     	            hasPotentialDivergentPoints = true;
     			}
@@ -160,27 +176,12 @@ public class Mandelbrot
     }
 
 
-    private void plotOnConsole()
-    {
-    	System.out.println("iteration: " + this.iteration);
-    	for (int jj = 0; jj < plane.getSizeY(); jj++)
-    	{
-    		for (int ii = 0; ii < plane.getSizeX(); ii++)
-    		{
-    			System.out.print("["+mset[ii][jj]+"]");
-    		}
-    		System.out.println();
-    	}
-    	System.out.println();
-    }
-
-
     private BufferedImage createImage(int colorMode)
     {
     	BufferedImage bufferedImage = new BufferedImage(plane.getSizeX(), plane.getSizeY(), BufferedImage.TYPE_INT_RGB);
     	int r, g, b;
 
-    	if (colorMode== 0) // negative B&W image (edges)
+    	if (colorMode== 0) // negative B&W image (edges and florescence)
     	{
     		for (int jj = 0; jj < plane.getSizeY(); jj++)
     		{
@@ -206,7 +207,7 @@ public class Mandelbrot
     			}
     		}
     	}
-    	else if (colorMode== 2) // negative B&W image (veils + outside ellipses)
+    	else if (colorMode== 2) // negative B&W image (veils +  bands)
     	{    		
     		for (int jj = 0; jj < plane.getSizeY(); jj++)
     		{
@@ -225,6 +226,21 @@ public class Mandelbrot
     }
 
 
+    private void plotOnConsole()
+    {
+    	System.out.println("iteration: " + this.iteration);
+    	for (int jj = 0; jj < plane.getSizeY(); jj++)
+    	{
+    		for (int ii = 0; ii < plane.getSizeX(); ii++)
+    		{
+    			System.out.print("["+mset[ii][jj]+"]");
+    		}
+    		System.out.println();
+    	}
+    	System.out.println();
+    }
+
+
     private void plotOnWindow(JFrame frame)
     {
         frame.setTitle("iteration: " + iteration);
@@ -232,27 +248,56 @@ public class Mandelbrot
     }
 
 
+    private void plotOnFile()
+    {
+    	String name = (c != null)? "julia" : "mandelbrot";
+    	try {
+        	File folder = new File(FILE_FOLDER);
+            if (! folder.exists()) folder.mkdir();
+			ImageIO.write(createImage(COLOR_MODE), "PNG", new File(folder.getPath()+"/"+name+"_"+sizeX+"_"+sizeY+"_"+x0+"_"+y0+"_"+thik+"_["+c+"]_"+iteration+"_"+COLOR_MODE+".png"));
+		} catch (IOException ignore) {}
+    }
+
+
     static public void main(String[] args)
     {
-    	//Mandelbrot.MAXITERATIONS = 400;
-    	Mandelbrot.PLOT_INTERMEDIATE_ITERATIONS = 1;
+    	Mandelbrot.PLOT_INTERMEDIATE_ITERATIONS = 100;
     	Mandelbrot.CREATE_INTERMEDIATE_FILES = false;
-    	Mandelbrot.DISPLAY_ON_WINDOW = true;
+    	Mandelbrot.DISPLAY_ON_WINDOW = false;
     	Mandelbrot.DISPLAY_ON_CONSOLE = false;
     	Mandelbrot.COLOR_MODE = 2;
 
-    	//new Mandelbrot(21, 9, 10, 4, 0.25);
-    	//new Mandelbrot(1220, 1080, 810, 540, 0.0025);  // 3.05 x 2.7 x0=2.025
-    	new Mandelbrot(1920, 1080, 1200, 540, 0.0025);   // screen
 
-    	//new Mandelbrot(0.001); // 3049x2700
-    	//new Mandelbrot(0.0002); // sizeX: 15249, sizeY: 13500, x0: 10124, y0: 6750
+    	// *******************************************************************************************************
+    	// plot the Mandelbrot set: c=z0
+    	// *******************************************************************************************************
+    	Mandelbrot.delta = 0.0000001D;
+    	Mandelbrot.MAXEMPTYIT= 100;
+    	Mandelbrot.c = null;
+    	Mandelbrot.dX = 3.05;  Mandelbrot.X0=2.025; Mandelbrot.dY = 2.7; Mandelbrot.Y0 = 1.35;
+    	Mandelbrot.FILE_FOLDER = "./"; //"./exports/";
+
+    	//new Mandelbrot(0.002); // low-resolution
+    	//new Mandelbrot(0.001); // mid-resolution 11m
+    	//new Mandelbrot(0.0005); // hi-resolution 47m
+    	new Mandelbrot(0.0002); // hi2-resolution - sizeX: 15249, sizeY: 13500, x0: 10124, y0: 6750
     	//new Mandelbrot(0.00012); // sizeX: 20333, sizeY: 18000, x0: 13500, y0: 9000, it=499  1h 25M
-    	//new Mandelbrot(0.00011); // sizeX: 27727, sizeY: 24545, x0: 18409, y0: 12272 , it=497 1h41 30M
+    	//new Mandelbrot(0.00011); // hi-resolution - sizeX: 27727, sizeY: 24545, x0: 18409, y0: 12272 , it=497 1h41 30M
+    	// *******************************************************************************************************
 
+
+    	// *******************************************************************************************************
+    	// plot the Mandelbrot set details
+    	// *******************************************************************************************************
+    	Mandelbrot.delta = 0.0000001D;
+    	Mandelbrot.MAXEMPTYIT= 10;
+    	Mandelbrot.c = null;
+    	Mandelbrot.dX = 3.05;  Mandelbrot.X0=2.025; Mandelbrot.dY = 2.7; Mandelbrot.Y0 = 1.35;
+    	Mandelbrot.FILE_FOLDER = "./exports/details";
     	//new Mandelbrot(Mandelbrot.dX-1.245, Mandelbrot.Y0-1.31, 20000, 0.000004); // detail 1
     	//new Mandelbrot(Mandelbrot.dX-1.245, Mandelbrot.Y0-1.305, 20000, 0.000003); // detail 2
     	//new Mandelbrot(Mandelbrot.dX-1.246, Mandelbrot.Y0-1.30, 20000, 0.000002); // detail 3 - sizeX: 20000, sizeY: 20000, x0: 902000, y0: 25000
     	//new Mandelbrot(Mandelbrot.dX-1.27, Mandelbrot.Y0-1.323, 20000, 0.000001); // detail 4 - sizeX: 20000, sizeY: 20000, x0: 1780000, y0: 27000
+    	// *******************************************************************************************************
     }
 }
