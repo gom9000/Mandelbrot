@@ -17,10 +17,10 @@ public class Julia
     	Mandelbrot.delta = 0.0000001D;
     	Mandelbrot.MAXEMPTYIT= 100;
 
-    	//Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.002/"; double thik = 0.002; // low-resolution (about 5')
+    	Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.002/"; double thik = 0.002; // low-resolution (about 5')
     	//Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.001/"; double thik = 0.001; // low-resolution (about 23')
     	//Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.0005/"; double thik = 0.0005; // mid-resolution (about 52')
-    	Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.00025/"; double thik = 0.00025; // hi-resolution (about ???')
+    	//Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.00025/"; double thik = 0.00025; // hi-resolution (about ???')
 
     	// ** Julia set: c=-0.11031, -0.67037i ********************************
     	Mandelbrot.c = new ComplexNumber(-0.11031, -0.67037);
@@ -81,5 +81,20 @@ public class Julia
     	Mandelbrot.c = new ComplexNumber(-0.15652, -1.03225);
     	Mandelbrot.dX = 3.80;  Mandelbrot.X0=1.90; Mandelbrot.dY = 3.0; Mandelbrot.Y0 = 1.5;
     	new Mandelbrot(thik);
+
+
+
+    	// *******************************************************************************************************
+    	// plot some hi-res Julia sets
+    	// *******************************************************************************************************
+
+    	// ** c=0.27334, 0.00742i *********************************************
+//    	Mandelbrot.delta = 0.0000001D;
+//    	Mandelbrot.MAXEMPTYIT= 100;
+//    	Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.00015/"; // (about ???')
+//    	Mandelbrot.c = new ComplexNumber(0.27334, 0.00742);
+//    	Mandelbrot.dX = 3.80;  Mandelbrot.X0=1.90; Mandelbrot.dY = 3.1; Mandelbrot.Y0 = 1.55;
+//    	new Mandelbrot(0.00015); // sizeX: 25333, sizeY: 20666, x0: 12666, y0: 10333, thik: 1.5E-4
+    	// *******************************************************************************************************
     }
 }

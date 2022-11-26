@@ -275,25 +275,26 @@ public class Mandelbrot
     	Mandelbrot.MAXEMPTYIT= 100;
     	Mandelbrot.c = null;
     	Mandelbrot.dX = 3.05;  Mandelbrot.X0=2.025; Mandelbrot.dY = 2.7; Mandelbrot.Y0 = 1.35;
-    	Mandelbrot.FILE_FOLDER = "./"; //"./exports/";
+    	Mandelbrot.FILE_FOLDER = "./exports/";
 
-    	//new Mandelbrot(0.002); // low-resolution
+    	new Mandelbrot(0.002); // low-resolution
     	//new Mandelbrot(0.001); // mid-resolution 11m
     	//new Mandelbrot(0.0005); // hi-resolution 47m
-    	new Mandelbrot(0.0002); // hi2-resolution - sizeX: 15249, sizeY: 13500, x0: 10124, y0: 6750
+    	//new Mandelbrot(0.0002); // hi2-resolution - 1h15m - sizeX: 15249, sizeY: 13500, x0: 10124, y0: 6750
     	//new Mandelbrot(0.00012); // sizeX: 20333, sizeY: 18000, x0: 13500, y0: 9000, it=499  1h 25M
-    	//new Mandelbrot(0.00011); // hi-resolution - sizeX: 27727, sizeY: 24545, x0: 18409, y0: 12272 , it=497 1h41 30M
+    	//new Mandelbrot(0.00011); // hi-resolution - sizeX: 27727, sizeY: 24545, x0: 18409, y0: 12272 , it=3285 1h41 30M
     	// *******************************************************************************************************
 
 
+
     	// *******************************************************************************************************
-    	// plot the Mandelbrot set details
+    	// plot some Mandelbrot set details
     	// *******************************************************************************************************
     	Mandelbrot.delta = 0.0000001D;
     	Mandelbrot.MAXEMPTYIT= 10;
     	Mandelbrot.c = null;
     	Mandelbrot.dX = 3.05;  Mandelbrot.X0=2.025; Mandelbrot.dY = 2.7; Mandelbrot.Y0 = 1.35;
-    	Mandelbrot.FILE_FOLDER = "./exports/details";
+    	Mandelbrot.FILE_FOLDER = "./exports/mdetails";
     	//new Mandelbrot(Mandelbrot.dX-1.245, Mandelbrot.Y0-1.31, 20000, 0.000004); // detail 1
     	//new Mandelbrot(Mandelbrot.dX-1.245, Mandelbrot.Y0-1.305, 20000, 0.000003); // detail 2
     	//new Mandelbrot(Mandelbrot.dX-1.246, Mandelbrot.Y0-1.30, 20000, 0.000002); // detail 3 - sizeX: 20000, sizeY: 20000, x0: 902000, y0: 25000
