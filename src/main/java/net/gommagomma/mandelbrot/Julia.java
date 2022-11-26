@@ -94,7 +94,7 @@ public class Julia
 //    	Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.00015/"; // (about ???')
 //    	Mandelbrot.c = new ComplexNumber(0.27334, 0.00742);
 //    	Mandelbrot.dX = 3.80;  Mandelbrot.X0=1.90; Mandelbrot.dY = 3.1; Mandelbrot.Y0 = 1.55;
-//    	new Mandelbrot(0.00015); // sizeX: 25333, sizeY: 20666, x0: 12666, y0: 10333, thik: 1.5E-4
+//    	new Mandelbrot(0.00015); // sizeX: 25333, sizeY: 20666, x0: 12666, y0: 10333, thik: 1.5E-4 - (about 4h15m)
     	// *******************************************************************************************************
     }
 }
