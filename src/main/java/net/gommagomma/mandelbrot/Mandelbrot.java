@@ -28,6 +28,9 @@ public class Mandelbrot
 	public static int MAXITERATIONS = 10000;
 	public static int MAXEMPTYIT = 10;
 	public static int PLOT_INTERMEDIATE_ITERATIONS = 0;
+	public static boolean PLOT_AXIS = false;
+	public static boolean PLOT_GRID = false;
+	public static double GRID_STEP = 1;
 	public static boolean DISPLAY_ON_WINDOW = false;
 	public static boolean DISPLAY_ON_CONSOLE = false;
 	public static boolean CREATE_INTERMEDIATE_FILES = false;
@@ -222,6 +225,71 @@ public class Mandelbrot
     		}
     	}
 
+    	if (PLOT_GRID)
+    	{
+    		double gridStep = GRID_STEP / thik;
+    		int div = 0;
+    		int maxYSide = (plane.getSizeY() - plane.getY0()) <= plane.getSizeY()/2 ? 2*plane.getSizeY() : plane.getY0();
+    		for (int jj = plane.getY0(); jj < maxYSide; jj+=(int)gridStep)
+    		{
+    			div++;
+    			for (int ii = 0; ii < plane.getSizeX(); ii++)
+    			{
+    				if (jj<plane.getSizeY())
+    				{
+    					if (div%10 == 0)
+				            bufferedImage.setRGB(ii, jj, new Color(0, 100, 0).getRGB());
+    					else
+    						bufferedImage.setRGB(ii, jj, new Color(0, 60, 0).getRGB());
+    				}
+    				if ((2*plane.getY0()-jj) > 0)
+    				{
+    					if (div%10 == 0)
+   					        bufferedImage.setRGB(ii, 2*plane.getY0()-jj, new Color(0, 100, 0).getRGB());
+    					else
+    						bufferedImage.setRGB(ii, 2*plane.getY0()-jj, new Color(0, 60, 0).getRGB());
+    				}
+    			}
+    		}
+    		int maxXSide = (plane.getSizeX() - plane.getX0()) <= plane.getSizeX()/2 ? 2*plane.getX0() : plane.getX0();
+			div = 0;
+    		for (int ii = plane.getX0(); ii < maxXSide; ii+=(int)gridStep)
+    		{
+				div++;
+    			for (int jj = 0; jj < plane.getSizeY(); jj++)
+    			{
+    				if (ii<plane.getSizeX())
+    				{
+    					if (div%10 == 0)
+				            bufferedImage.setRGB(ii, jj, new Color(0, 100, 0).getRGB());
+    					else
+    						bufferedImage.setRGB(ii, jj, new Color(0, 60, 0).getRGB());
+    				}
+    				if ((2*plane.getX0()-ii) > 0)
+    				{
+    					if (div%10 == 0)
+   					        bufferedImage.setRGB(2*plane.getX0()-ii, jj, new Color(0, 100, 0).getRGB());
+    					else
+    						bufferedImage.setRGB(2*plane.getX0()-ii, jj, new Color(0, 60, 0).getRGB());
+    				}
+    			}
+    		}
+    	}
+
+    	if (PLOT_AXIS)
+    	{
+    		for (int jj = 0; jj < plane.getSizeY(); jj++)
+    		{
+    			for (int ii = 0; ii < plane.getSizeX(); ii++)
+    			{
+    				if (ii == plane.getX0() || jj == plane.getY0())
+    				{
+    					bufferedImage.setRGB(ii, jj, new Color(0, 255, 0).getRGB());
+    				}
+    			}
+    		}
+    	}
+
     	return bufferedImage;
     }
 
@@ -276,8 +344,8 @@ public class Mandelbrot
     	Mandelbrot.c = null;
     	Mandelbrot.dX = 3.05;  Mandelbrot.X0=2.025; Mandelbrot.dY = 2.7; Mandelbrot.Y0 = 1.35;
     	Mandelbrot.FILE_FOLDER = "./exports/";
-
-    	new Mandelbrot(0.002); // low-resolution
+    	PLOT_GRID = true;  PLOT_AXIS = true; GRID_STEP = .05;
+    	new Mandelbrot(0.005); // low-resolution
     	//new Mandelbrot(0.001); // mid-resolution 11m
     	//new Mandelbrot(0.0005); // hi-resolution 47m
     	//new Mandelbrot(0.0002); // hi2-resolution - 1h15m - sizeX: 15249, sizeY: 13500, x0: 10124, y0: 6750

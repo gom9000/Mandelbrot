@@ -16,7 +16,7 @@ public class Julia
     	// *******************************************************************************************************
     	Mandelbrot.delta = 0.0000001D;
     	Mandelbrot.MAXEMPTYIT= 100;
-
+    	//Mandelbrot.PLOT_GRID = true;  Mandelbrot.PLOT_AXIS = true; Mandelbrot.GRID_STEP = .5;
     	Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.002/"; double thik = 0.002; // low-resolution (about 5')
     	//Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.001/"; double thik = 0.001; // low-resolution (about 23')
     	//Mandelbrot.FILE_FOLDER = "./exports/Julia_sets_0.0005/"; double thik = 0.0005; // mid-resolution (about 52')

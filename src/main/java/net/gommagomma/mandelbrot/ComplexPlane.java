@@ -92,6 +92,18 @@ public class ComplexPlane
 	}
 
 
+	public int getX0()
+	{
+		return x0;
+	}
+
+
+	public int getY0()
+	{
+		return y0;
+	}
+
+
 	public ComplexNumber getRelativePoint0(int x, int y)
 	{
 		return new ComplexNumber(x * thik, y * thik);
